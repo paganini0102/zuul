@@ -63,29 +63,29 @@ public class ZuulServlet extends HttpServlet {
     @Override
     public void service(javax.servlet.ServletRequest servletRequest, javax.servlet.ServletResponse servletResponse) throws ServletException, IOException {
         try {
-            init((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+            init((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse); // 用于初始化RequestContext
 
             // Marks this request as having passed through the "Zuul engine", as opposed to servlets
             // explicitly bound in web.xml, for which requests will not have the same data attached
-            RequestContext context = RequestContext.getCurrentContext();
+            RequestContext context = RequestContext.getCurrentContext(); // RequestContext用于记录Request的context。由于Servlet是单例多线程的，而Request由唯一worker线程处理,这里的RequestContext使用ThreadLocal实现，其本身简单wrap了ConcurrentHashMap
             context.setZuulEngineRan();
 
             try {
-                preRoute();
+                preRoute(); // 执行Pre filters逻辑
             } catch (ZuulException e) {
                 error(e);
                 postRoute();
                 return;
             }
             try {
-                route();
+                route(); // 执行route逻辑
             } catch (ZuulException e) {
                 error(e);
                 postRoute();
                 return;
             }
             try {
-                postRoute();
+                postRoute(); // 执行postRoute逻辑
             } catch (ZuulException e) {
                 error(e);
                 return;

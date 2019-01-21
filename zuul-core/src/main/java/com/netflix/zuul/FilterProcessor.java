@@ -190,11 +190,11 @@ public class FilterProcessor {
                 copy = ctx.copy();
             }
             
-            ZuulFilterResult result = filter.runFilter();
+            ZuulFilterResult result = filter.runFilter(); // 运行filter的处理逻辑
             ExecutionStatus s = result.getStatus();
             execTime = System.currentTimeMillis() - ltime;
 
-            switch (s) {
+            switch (s) { // 记录filter的处理状态，如果filter处理失败，把异常抛出
                 case FAILED:
                     t = result.getException();
                     ctx.addFilterExecutionSummary(filterName, ExecutionStatus.FAILED.name(), execTime);
